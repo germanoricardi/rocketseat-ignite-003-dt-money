@@ -11,6 +11,7 @@ export const TransactionsContainer = styled.main`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 0.5rem;
+  margin-top: 1.5rem;
 
   td {
     background: ${props => props.theme["gray-700"]};
