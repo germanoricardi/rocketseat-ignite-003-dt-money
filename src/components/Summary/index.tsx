@@ -4,7 +4,7 @@ import {
   CurrencyCircleDollar,
 } from 'phosphor-react'
 import { useSummary } from '../../hooks/useSummary'
-import { priceFormatter } from '../../ultis/formatter'
+import { priceFormatter } from '../../utils/formatter'
 import { SummaryCard, SummaryContainer } from './styles'
 
 export function Summary() {

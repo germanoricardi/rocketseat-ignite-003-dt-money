@@ -47,6 +47,14 @@
       "type": "outcome",
       "createdAt": "2023-03-15T16:59:20.839Z",
       "id": 6
+    },
+    {
+      "category": "Venda",
+      "description": "Rocketseat One",
+      "price": 1700,
+      "type": "income",
+      "createdAt": "2023-11-12T05:35:53.222Z",
+      "id": 7
     }
   ]
 }

@@ -1,8 +1,9 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { createContext } from 'use-context-selector'
 import { api } from '../lib/axios'
+import { TransactionsCollection } from '../db/Transactions'
 
-interface Transaction {
+export interface Transaction {
   id: number
   description: string
   type: 'income' | 'outcome'
@@ -34,6 +35,18 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
 
   const fetchTransactions = useCallback(async (query?: string) => {
+    if (!import.meta.env.VITE_API_URL) {
+      return !query
+        ? setTransactions(TransactionsCollection)
+        : setTransactions(
+            TransactionsCollection.filter((transaction) =>
+              transaction.description
+                .toLocaleLowerCase()
+                .includes(query.toLocaleLowerCase().toString()),
+            ),
+          )
+    }
+
     const response = await api.get('/transactions', {
       params: {
         _sort: 'createdAt',
@@ -41,13 +54,24 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
         q: query,
       },
     })
-
     setTransactions(response.data)
   }, [])
 
   const createTransaction = useCallback(
     async (data: CreateTransactionInput) => {
       const { category, description, price, type } = data
+
+      const newTransaction: Transaction = {
+        category,
+        createdAt: new Date().toISOString(),
+        description,
+        id: transactions.length + 1,
+        price,
+        type,
+      }
+
+      if (!import.meta.env.VITE_API_URL)
+        return setTransactions((state) => [newTransaction, ...state])
 
       const response = await api.post('transactions', {
         category,
@@ -59,7 +83,7 @@ export function TransactionsProvider({ children }: TransactionsProviderProps) {
 
       setTransactions((state) => [response.data, ...state])
     },
-    [],
+    [transactions.length],
   )
 
   useEffect(() => {
